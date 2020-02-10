@@ -1,52 +1,29 @@
-# Example app with styled-components
+# timesheets.ingenious.agency
 
-This example features how you use a different styling solution than [styled-jsx](https://github.com/zeit/styled-jsx) that also supports universal styles. That means we can serve the required styles for the first render within the HTML and then load the rest in the client. In this case we are using [styled-components](https://github.com/styled-components/styled-components).
+A web app that allows users to upload their timesheets (like the CSV ones you get form Toggl) into a database to be consumed later by a Google App Script.
 
-For this purpose we are extending the `<Document />` and injecting the server side rendered styles into the `<head>`, and also adding the `babel-plugin-styled-components` (which is required for server side rendering). Additionally we set up a global [theme](https://www.styled-components.com/docs/advanced#theming) for styled-components using NextJS custom [`<App>`](https://nextjs.org/docs#custom-app) component.
+## Motivation
 
-## Deploy your own
+There are two main drivers for building this app. Timesheet creation and management at Ingenious is pretty basic, we share our hours with admin staff, and they manually upload the info into a spreadsheet they use to do their calculations. We can do this in a better way.
 
-Deploy the example using [ZEIT Now](https://zeit.co/now):
+The second motivation is to work on this in the open, on my [Twitch channel](https://www.twitch.tv/iamcherta), and share how I approach these types of applications using React, Next, and other technologies that I find interesting.
 
-[![Deploy with ZEIT Now](https://zeit.co/button)](https://zeit.co/new/project?template=https://github.com/zeit/next.js/tree/canary/examples/with-styled-components)
+## Design
 
-## How to use
+What we are looking for is the automation of timesheet submission and prevent the hassle of continuously ask employees to send their work hours. Ideally, the app makes this part of the timesheet submission process automatic.
 
-### Using `create-next-app`
+The idea is pretty basic. The app should be able to login users from a configurable domain, and once logged in, it should let you import a CSV, map the columns into the ones the system support, and upload the timesheet to a DB.
 
-Execute [`create-next-app`](https://github.com/zeit/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+After the import is done, an admin person should be able to retrieve the timesheet into a Google Spreadsheet, and from there, let admin staff continue with their regular workflow.
 
-```bash
-npm init next-app --example with-styled-components with-styled-components-app
-# or
-yarn create next-app --example with-styled-components with-styled-components-app
-```
+## Architecture
 
-### Download manually
+![The app architecture](./docs/architecture.png)
 
-Download the example:
+## Roadmap
 
-```bash
-curl https://codeload.github.com/zeit/next.js/tar.gz/canary | tar -xz --strip=2 next.js-canary/examples/with-styled-components
-cd with-styled-components
-```
-
-Install it and run:
-
-```bash
-npm install
-npm run dev
-# or
-yarn
-yarn dev
-```
-
-Deploy it to the cloud with [now](https://zeit.co/now) ([download](https://zeit.co/download)):
-
-```bash
-now
-```
-
-### Try it on CodeSandbox
-
-[Open this example on CodeSandbox](https://codesandbox.io/s/github/zeit/next.js/tree/canary/examples/with-styled-components)
+- [x] Create a component that receives a file and parses a CSV into a JS object
+- [ ] Allow rows deletion and ammend
+- [ ] Allow users to map their columns with the ones the system supports
+- [ ] Allow users to submit their timesheet
+- [ ] Allow admin staff to retrieve timesheets from within Google Spreadhseets
