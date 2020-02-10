@@ -19,7 +19,7 @@ export default () => {
   };
 
   const onFileContents = data => {
-    setTimesheetHeader([data[0]].map(timesheetMap));
+    setTimesheetHeader(timesheetMap(data[0]));
     setTimesheetContent(data.slice(1).map(timesheetMap));
   };
 
