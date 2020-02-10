@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "next": "latest",
+    "papaparse": "^5.1.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "styled-components": "^4.0.0"
