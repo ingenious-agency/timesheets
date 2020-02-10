@@ -14,11 +14,12 @@ export default () => {
   const [timesheetContent, setTimesheetContent] = useState([]);
 
   const timesheetMap = item => {
+    // [description, duration, start date]
     return [item[5], item[11], item[7]];
   };
 
   const onFileContents = data => {
-    setTimesheetHeader([data[0][5], data[0][11], data[0][7]]);
+    setTimesheetHeader(timesheetMap(data[0]));
     setTimesheetContent(data.slice(1).map(timesheetMap));
   };
 
