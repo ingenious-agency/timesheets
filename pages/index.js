@@ -7,6 +7,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 2rem 4rem 0 4rem;
+  height: calc(100vh - 2rem - 72px);
+  justify-content: center;
 `;
 
 export default () => {
@@ -25,7 +28,7 @@ export default () => {
 
   return (
     <Container>
-      <Input type="file" onFile={onFileContents} />
+      <Input title="Upload your timesheet" onFile={onFileContents} />
       {/* <Table>
         <Header data={timesheetHeader} />
         <Contents data={timesheetContent} />
