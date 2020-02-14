@@ -12,4 +12,5 @@ export const Button = styled.button`
   color: white;
   font-family: ${({ theme }) => theme.fonts.primary};
   cursor: pointer;
+  border: none;
 `;
