@@ -91,7 +91,7 @@ export default () => {
 
   return (
     <Container hasContent={hasContent}>
-      {hasContent && (
+      {hasContent > 0 && (
         <InformationContainer>
           <Title2>
             Total: <span>{totalHours}</span>
