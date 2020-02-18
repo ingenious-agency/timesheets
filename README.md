@@ -23,7 +23,7 @@ After the import is done, an admin person should be able to retrieve the timeshe
 ## Roadmap
 
 - [x] Create a component that receives a file and parses a CSV into a JS object
-- [ ] Allow rows deletion and ammend
+- [x] Allow rows deletion and ammend
 - [ ] Allow users to map their columns with the ones the system supports
 - [ ] Allow users to submit their timesheet
 - [ ] Allow admin staff to retrieve timesheets from within Google Spreadhseets
