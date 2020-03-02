@@ -11,12 +11,12 @@ import { Title2 } from "../components/Title";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: ${({ hasContent }) => (hasContent ? "flex-end" : "center")};
+  align-items: ${({ hasContents }) => (hasContents ? "flex-end" : "center")};
   padding: 2rem 4rem 0 4rem;
   height: ${({ hasContent }) =>
     hasContent ? "100%" : "calc(100vh - 2rem - 72px)"};
-  justify-content: ${({ hasContent }) =>
-    hasContent ? "flex-start" : "center"};
+  justify-content: ${({ hasContents }) =>
+    hasContents ? "flex-start" : "center"};
   margin-bottom: 4rem;
 `;
 
@@ -27,26 +27,56 @@ const InformationContainer = styled.div`
   width: 100%;
 `;
 
-export default () => {
-  const timesheetHeader = useMemo(() => [
-    { Header: "Task", accessor: "task" },
-    { Header: "Project", accessor: "project" },
-    { Header: "Duration", accessor: "duration" },
-    { Header: "Date", accessor: "date" }
-  ]);
-  const [timesheetContent, setTimesheetContent] = useState([]);
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 2rem 0;
+`;
+
+const useTimesheetState = config => {
+  const [data, setData] = useState([]);
 
   const totalHours = useMemo(() => {
     let hours = "00:00:00";
-    timesheetContent.forEach(item => {
-      hours = str(add([hours, item.duration || "00:00:00"]));
+    data.forEach(item => {
+      hours = str(add([hours, item[config.hoursColumn] || "00:00:00"]));
     });
     return hours;
-  }, [timesheetContent]);
+  }, [data]);
 
-  const hasContent = useMemo(() => timesheetContent.length > 0, [
-    timesheetContent
-  ]);
+  const hasData = useMemo(() => data.length > 0, [data]);
+
+  const replaceRow = (rowIndex, columnId, value) => {
+    setData(old =>
+      old.map((row, index) => {
+        if (index === rowIndex) {
+          return {
+            ...old[rowIndex],
+            [columnId]: value
+          };
+        }
+        return row;
+      })
+    );
+  };
+
+  const deleteRows = idsToDelete => {
+    setData(data.filter((_timesheet, index) => !idsToDelete.includes(index)));
+  };
+
+  return { data, setData, hasData, totalHours, replaceRow, deleteRows };
+};
+
+export default () => {
+  const {
+    data,
+    setData,
+    hasData,
+    totalHours,
+    replaceRow,
+    deleteRows
+  } = useTimesheetState({ hoursColumn: "duration" });
 
   const timesheetMap = item => {
     return {
@@ -65,33 +95,20 @@ export default () => {
     };
   };
 
+  const columns = useMemo(() => [
+    { Header: "Task", accessor: "task" },
+    { Header: "Project", accessor: "project" },
+    { Header: "Duration", accessor: "duration" },
+    { Header: "Date", accessor: "date" }
+  ]);
+
   const onFileContents = data => {
-    setTimesheetContent(data.slice(1).map(timesheetMap));
-  };
-
-  const onDeleteRows = ids => {
-    setTimesheetContent(
-      timesheetContent.filter((_timesheet, index) => !ids.includes(index))
-    );
-  };
-
-  const onUpdateData = (rowIndex, columnId, value) => {
-    setTimesheetContent(old =>
-      old.map((row, index) => {
-        if (index === rowIndex) {
-          return {
-            ...old[rowIndex],
-            [columnId]: value
-          };
-        }
-        return row;
-      })
-    );
+    setData(data.slice(1).map(timesheetMap));
   };
 
   return (
-    <Container hasContent={hasContent}>
-      {hasContent > 0 && (
+    <Container hasContents={hasData}>
+      {hasData > 0 && (
         <InformationContainer>
           <Title2>
             Total: <span>{totalHours}</span>
@@ -99,27 +116,22 @@ export default () => {
           <Input onFile={onFileContents} title="Re-upload your timesheet" />
         </InformationContainer>
       )}
-      {!hasContent && (
+
+      {!hasData && (
         <Input onFile={onFileContents} title="Upload your timesheet" />
       )}
 
       <Table
-        headers={timesheetHeader}
-        data={timesheetContent}
-        onDeleteRows={onDeleteRows}
-        onUpdateData={onUpdateData}
+        headers={columns}
+        data={data}
+        onDeleteRows={deleteRows}
+        onUpdateData={replaceRow}
       />
-      {hasContent && (
-        <div
-          css={css`
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin: 2rem 0;
-          `}
-        >
+
+      {hasData && (
+        <ButtonContainer>
           <Button>Save 💾</Button>
-        </div>
+        </ButtonContainer>
       )}
     </Container>
   );
